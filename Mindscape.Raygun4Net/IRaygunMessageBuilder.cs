@@ -12,6 +12,10 @@ namespace Mindscape.Raygun4Net
   {
     RaygunMessage Build();
 
+    #if !WINRT && !WINDOWS_PHONE && !ANDROID && !IOS
+    IRaygunMessageBuilder SetHttpDetails(HttpContext context);
+    #endif
+
     IRaygunMessageBuilder SetMachineName(string machineName);
 
     IRaygunMessageBuilder SetExceptionDetails(Exception exception);
@@ -23,5 +27,9 @@ namespace Mindscape.Raygun4Net
     IRaygunMessageBuilder SetVersion();
 
     IRaygunMessageBuilder SetUserCustomData(IDictionary userCustomData);
+
+    IRaygunMessageBuilder SetContextIdentifier(string identifier);
+
+    IRaygunMessageBuilder SetUserIdentifier(string identifier);
   }
 }

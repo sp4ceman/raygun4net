@@ -56,6 +56,8 @@ namespace Mindscape.Raygun4Net
   public class RaygunClient
   {
     private readonly string _apiKey;
+    private readonly string _contextIdentifier;
+    private string _userIdentifier;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RaygunClient" /> class.
@@ -64,12 +66,24 @@ namespace Mindscape.Raygun4Net
     public RaygunClient(string apiKey)
     {
       _apiKey = apiKey;
+      _contextIdentifier = Guid.NewGuid().ToString();
 
 #if WINDOWS_PHONE
       Deployment.Current.Dispatcher.BeginInvoke(SendStoredMessages);
 #elif ANDROID || IOS
       ThreadPool.QueueUserWorkItem(state => { SendStoredMessages(); });
 #endif
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RaygunClient" /> class.
+    /// </summary>
+    /// <param name="apiKey">The API key.</param>
+    /// <param name="userIdentifier">An identifier token for the current user</param>
+    public RaygunClient(string apiKey, string userIdentifier)
+      : this(apiKey)
+    {
+      _userIdentifier = userIdentifier;
     }
 
 #if !ANDROID && !IOS
@@ -542,6 +556,11 @@ namespace Mindscape.Raygun4Net
       return message;
     }
 #else
+    public void SetUserIdentifier(string identifier)
+    {
+      _userIdentifier = identifier;
+    }
+
     /// <summary>
     /// Transmits an exception to Raygun.io synchronously, using the version number of the originating assembly.
     /// </summary>
@@ -550,6 +569,16 @@ namespace Mindscape.Raygun4Net
     {
       exception = StripTargetInvocationException(exception);
       Send(BuildMessage(exception));
+    }
+
+    /// <summary>
+    /// Transmits an exception to Raygun.io synchronously, using the version number of the originating assembly.
+    /// </summary>
+    /// <param name="exception">The exception to deliver</param>
+    public void Send(Exception exception, string userIdentifier)
+    {
+      exception = StripTargetInvocationException(exception);
+      Send(BuildMessage(exception, userIdentifier));
     }
 
     /// <summary>
@@ -567,6 +596,14 @@ namespace Mindscape.Raygun4Net
     }
 
     public void Send(Exception exception, IList<string> tags, string version)
+    {
+      var message = BuildMessage(exception);
+      message.Details.Tags = tags;
+      message.Details.Version = version;
+      Send(message);
+    }
+
+    public void Send(Exception exception, IList<string> tags, string version, string userIdentifier)
     {
       var message = BuildMessage(exception);
       message.Details.Tags = tags;
@@ -1144,13 +1181,20 @@ namespace Mindscape.Raygun4Net
 #elif !WINRT && !WINDOWS_PHONE
     internal RaygunMessage BuildMessage(Exception exception)
     {
+      return BuildMessage(exception, _userIdentifier);
+    }
+
+    internal RaygunMessage BuildMessage(Exception exception, string userIdentifier)
+    {
       var message = RaygunMessageBuilder.New
+        .SetContextIdentifier(_contextIdentifier)
         .SetHttpDetails(HttpContext.Current)
         .SetEnvironmentDetails()
         .SetMachineName(Environment.MachineName)
         .SetExceptionDetails(exception)
         .SetClientDetails()
         .SetVersion()
+        .SetUserIdentifier(userIdentifier)
         .Build();
       return message;
     }

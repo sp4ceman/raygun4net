@@ -110,6 +110,11 @@ namespace Mindscape.Raygun4Net
       if (context != null)
       {
         _raygunMessage.Details.Request = new RaygunRequestMessage(context);
+
+        if (context.Session != null)
+        {
+          _raygunMessage.Details.Context = new RaygunContextMessage() { Identifier = context.Session.SessionID };
+        }
       }
 
       return this;
@@ -129,5 +134,25 @@ namespace Mindscape.Raygun4Net
       return this;
     }
 #endif
+
+    public IRaygunMessageBuilder SetContextIdentifier(string identifier)
+    {
+      _raygunMessage.Details.Context.Identifier = identifier;
+      return this;
+    }
+
+    public IRaygunMessageBuilder SetUserIdentifier(string identifier)
+    {
+      if (String.IsNullOrEmpty(identifier))
+      {
+        _raygunMessage.Details.User = null;
+        return this;
+      }
+      else
+      {
+        _raygunMessage.Details.User = new RaygunUserMessage() { Identifier = identifier };
+        return this;
+      }
+    }
   }
 }
