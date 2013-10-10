@@ -556,7 +556,7 @@ namespace Mindscape.Raygun4Net
       return message;
     }
 #else
-    public void SetUserIdentifier(string identifier)
+    public void Identify(string identifier)
     {
       _userIdentifier = identifier;
     }
