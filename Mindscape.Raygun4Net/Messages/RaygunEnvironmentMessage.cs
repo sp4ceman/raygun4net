@@ -181,16 +181,21 @@ namespace Mindscape.Raygun4Net.Messages
         try
         {
           Architecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
-          TotalPhysicalMemory = (ulong)info.TotalPhysicalMemory / 0x100000; // in MB
-          AvailablePhysicalMemory = (ulong)info.AvailablePhysicalMemory / 0x100000;
-          TotalVirtualMemory = info.TotalVirtualMemory / 0x100000;
-          AvailableVirtualMemory = info.AvailableVirtualMemory / 0x100000;
+          TotalPhysicalMemory = (ulong) info.TotalPhysicalMemory/0x100000; // in MB
+          AvailablePhysicalMemory = (ulong) info.AvailablePhysicalMemory/0x100000;
+          TotalVirtualMemory = info.TotalVirtualMemory/0x100000;
+          AvailableVirtualMemory = info.AvailableVirtualMemory/0x100000;
           GetDiskSpace();
           Cpu = GetCpu();
         }
         catch (SecurityException)
         {
-          System.Diagnostics.Trace.WriteLine("RaygunClient error: couldn't access environment variables. If you are running in Medium Trust, in web.config in RaygunSettings set mediumtrust=\"true\"");
+          Trace.WriteLine(
+            "RaygunClient error: couldn't access environment variables. If you are running in Medium Trust, in web.config in RaygunSettings set mediumtrust=\"true\"");
+        }
+        catch (Exception e)
+        {
+          Trace.WriteLine("RaygunClient: Info - Couldn't read all available environment data - " + e.Message);
         }
       }
 #endif
