@@ -57,6 +57,8 @@ namespace Mindscape.Raygun4Net
   {
     private readonly string _apiKey;
 
+    public string User { get; set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RaygunClient" /> class.
     /// </summary>
@@ -529,6 +531,7 @@ namespace Mindscape.Raygun4Net
           .SetExceptionDetails(exception)
           .SetClientDetails()
           .SetVersion()
+          .SetUser(User)
           .Build();
 
       if (tags != null)
@@ -665,7 +668,8 @@ namespace Mindscape.Raygun4Net
     public void SendInBackground(RaygunMessage raygunMessage)
     {
       ThreadPool.QueueUserWorkItem(c => Send(raygunMessage));
-    }
+    }    
+
 #endif
 
 #if ANDROID || IOS
@@ -1143,7 +1147,7 @@ namespace Mindscape.Raygun4Net
     }
 #elif !WINRT && !WINDOWS_PHONE
     internal RaygunMessage BuildMessage(Exception exception)
-    {
+    {      
       var message = RaygunMessageBuilder.New
         .SetHttpDetails(HttpContext.Current)
         .SetEnvironmentDetails()
@@ -1151,6 +1155,7 @@ namespace Mindscape.Raygun4Net
         .SetExceptionDetails(exception)
         .SetClientDetails()
         .SetVersion()
+        .SetUser(User)
         .Build();
       return message;
     }
