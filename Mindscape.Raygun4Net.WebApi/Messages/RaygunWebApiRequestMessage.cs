@@ -16,6 +16,8 @@ namespace Mindscape.Raygun4Net.WebApi.Messages
       HttpMethod = request.Method.ToString();
       IPAddress = GetIPAddress(request);
 
+      ignoredFormNames = ignoredFormNames ?? Enumerable.Empty<string>();
+
       var ignored = ignoredFormNames.ToLookup(i => i);
       Headers = new Dictionary<string, string>();
 
