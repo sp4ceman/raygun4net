@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mindscape.Raygun4Net.WebApi", "Mindscape.Raygun4Net.WebApi\Mindscape.Raygun4Net.WebApi.csproj", "{E251E50C-78CE-49DD-B87D-45A1879613CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mindscape.Raygun4Net", "Mindscape.Raygun4Net\Mindscape.Raygun4Net.csproj", "{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FAB0BBA8-D4F3-44F7-9D17-85E2531AE9FA}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Sign|Any CPU = Sign|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E251E50C-78CE-49DD-B87D-45A1879613CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E251E50C-78CE-49DD-B87D-45A1879613CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E251E50C-78CE-49DD-B87D-45A1879613CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E251E50C-78CE-49DD-B87D-45A1879613CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E251E50C-78CE-49DD-B87D-45A1879613CC}.Sign|Any CPU.ActiveCfg = Release|Any CPU
+		{E251E50C-78CE-49DD-B87D-45A1879613CC}.Sign|Any CPU.Build.0 = Release|Any CPU
+		{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}.Sign|Any CPU.ActiveCfg = Sign|Any CPU
+		{495E53B3-F3AF-4C4F-BAAF-865EFAA2F4A9}.Sign|Any CPU.Build.0 = Sign|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
