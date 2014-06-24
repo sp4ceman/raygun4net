@@ -19,18 +19,21 @@ namespace Mindscape.Raygun4Net.WebApi.Messages
       ignoredFormNames = ignoredFormNames ?? Enumerable.Empty<string>();
 
       var ignored = ignoredFormNames.ToLookup(i => i);
+
+      Form = ToDictionary(request.GetQueryNameValuePairs(), ignored);
+
       Headers = new Dictionary<string, string>();
 
       foreach (var header in request.Headers.Where(h => !ignored.Contains(h.Key)))
       {
-          Headers.Add(header.Key, string.Join(",", header.Value));
+          Headers[header.Key] = string.Join(",", header.Value);
       }
 
       if (request.Content.Headers.ContentLength.HasValue && request.Content.Headers.ContentLength.Value > 0)
       {
         foreach (var header in request.Content.Headers)
         {
-          Headers.Add(header.Key, string.Join(",", header.Value));
+          Headers[header.Key] = string.Join(",", header.Value);
         }
 
         try
@@ -39,6 +42,16 @@ namespace Mindscape.Raygun4Net.WebApi.Messages
         }
         catch (Exception) {}
       }
+    }
+
+    private IDictionary ToDictionary(IEnumerable<KeyValuePair<string, string>> kvPairs, ILookup<string, string> ignored)
+    {
+      var dictionary = new Dictionary<string, string>();
+      foreach (var pair in kvPairs.Where(kv => !ignored.Contains(kv.Key)))
+      {
+        dictionary[pair.Key] = pair.Value;
+      }
+      return dictionary;
     }
 
     private const string HttpContext = "MS_HttpContext";
@@ -74,6 +87,7 @@ namespace Mindscape.Raygun4Net.WebApi.Messages
 
     public string IPAddress { get; set; }
 
+    public IDictionary Form { get; set; }
 
     public string RawData { get; set; }
 
