@@ -53,9 +53,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICanCreateRaygunClient.cs" />
+    <Compile Include="RaygunWebApiExceptionHandlingControllerActivator.cs" />
     <Compile Include="Messages\RaygunWebApiRequestMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RaygunWebApi.cs" />
     <Compile Include="RaygunWebApiClient.cs" />
+    <Compile Include="RaygunWebApiCustomControllerActionSelector.cs" />
+    <Compile Include="RaygunWebApiFilters.cs" />
     <Compile Include="RaygunWebApiExceptionLogger.cs" />
     <Compile Include="RaygunWebApiMessageBuilder.cs" />
   </ItemGroup>

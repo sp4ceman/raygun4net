@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
 using Mindscape.Raygun4Net.Messages;
 using Mindscape.Raygun4Net.WebApi.Messages;
 
@@ -11,6 +13,39 @@ namespace Mindscape.Raygun4Net.WebApi
     public static RaygunWebApiMessageBuilder New
     {
       get { return new RaygunWebApiMessageBuilder(); }
+    }
+
+    public override IRaygunMessageBuilder SetExceptionDetails(Exception exception)
+    {
+      var error = exception as HttpException;
+      if (error != null)
+      {
+        _raygunMessage.Details.Response = new RaygunResponseMessage
+        {
+          StatusCode = (int)error.StatusCode, 
+          StatusDescription = error.StatusCode.ToString()
+        };
+      }
+
+      var responseException = exception as HttpResponseException;
+      if (responseException != null)
+      {
+        try
+        {
+          var task = responseException.Response.Content.ReadAsStringAsync();
+          task.Wait();
+          responseException.Data["Content"] = task.Result;
+        }
+        catch(Exception) {}
+
+        _raygunMessage.Details.Response = new RaygunResponseMessage
+        {
+          StatusCode = (int)responseException.Response.StatusCode,
+          StatusDescription = responseException.Response.ReasonPhrase
+        };
+      }
+
+      return base.SetExceptionDetails(exception);
     }
 
     public IRaygunMessageBuilder SetHttpDetails(HttpRequestMessage message, List<string> ignoredFormNames = null)

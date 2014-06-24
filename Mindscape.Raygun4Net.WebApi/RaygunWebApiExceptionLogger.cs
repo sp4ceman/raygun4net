@@ -1,34 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 
 namespace Mindscape.Raygun4Net.WebApi
 {
   public class RaygunWebApiExceptionLogger : ExceptionLogger
   {
-    private Func<RaygunWebApiClient> _generateRaygunClient;
+    private readonly ICanCreateRaygunClient _clientCreator;
 
-    public static void Init(HttpConfiguration config, Func<RaygunWebApiClient> generateRaygunClient = null)
+    internal RaygunWebApiExceptionLogger(ICanCreateRaygunClient generateRaygunClient)
     {
-      new RaygunWebApiExceptionLogger().Attach(config, generateRaygunClient);
+      _clientCreator = generateRaygunClient;
     }
 
-    private void Attach(HttpConfiguration config, Func<RaygunWebApiClient> generateRaygunClient = null)
+    public override void Log(ExceptionLoggerContext context)
     {
-      config.Services.Add(typeof(IExceptionLogger), this);
-      _generateRaygunClient = generateRaygunClient;
+      _clientCreator.GetClient().CurrentHttpRequest(context.Request).Send(context.Exception, new List<string> { "Exception Logger" });
     }
 
     public override Task LogAsync(ExceptionLoggerContext context, CancellationToken cancellationToken)
     {
-      return Task.Factory.StartNew(() => GetClient().CurrentHttpRequest(context.Request).Send(context.Exception), cancellationToken);
-    }
-
-    private RaygunWebApiClient GetClient()
-    {
-      return _generateRaygunClient == null ? new RaygunWebApiClient() : _generateRaygunClient();
+      return Task.Factory.StartNew(() => _clientCreator.GetClient().CurrentHttpRequest(context.Request).Send(context.Exception, new List<string> { "Exception Logger" }), cancellationToken);
     }
   }
 }
